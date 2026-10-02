@@ -1,0 +1,101 @@
+---
+import '../styles/global.css';
+import { SITE } from '../site';
+import { CATEGORIES } from '../content.config';
+import Newsletter from '../components/Newsletter.astro';
+import { getCollection } from 'astro:content';
+import { formatDate } from '../site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  bigMast?: boolean;
+  type?: 'website' | 'article';
+}
+const { title, description = SITE.description, image, bigMast = false, type = 'website' } = Astro.props;
+const fullTitle = title ? `${title} | ${SITE.name}` : `${SITE.name}: ${SITE.tagline}`;
+const path = Astro.url.pathname;
+// Static site: show the date of the newest story, not a build-time "today"
+const newest = (await getCollection('posts')).reduce((a, p) => (p.data.date > a ? p.data.date : a), new Date(0));
+---
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={new URL(path, Astro.site)} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={type} />
+    {image && <meta property="og:image" content={new URL(image, Astro.site)} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="alternate" type="application/rss+xml" title={SITE.name} href="/rss.xml" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preload" href="/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="masthead">
+      <div class="wrap">
+        <div class="mast-top">
+          <span class="tag">{SITE.tagline}</span>
+          <span>Updated {formatDate(newest)}</span>
+          <span class="util"><a href="#newsletter">Subscribe</a> <a href="/rss.xml">RSS</a></span>
+        </div>
+        {bigMast ? (
+          <h1 class="mast-h1"><a class="wordmark" href="/" aria-label={SITE.name}>
+            <svg viewBox="0 0 770 122" aria-hidden="true"><text x="0" y="118">{SITE.name.toUpperCase()}</text></svg>
+          </a></h1>
+        ) : <a class="logo small" href="/">{SITE.name}</a>}
+        <div class="mast-nav">
+          <nav aria-label="Sections">
+            <ul>
+              {CATEGORIES.map((c) => {
+                const href = `/category/${c.toLowerCase()}/`;
+                return <li><a href={href} aria-current={path === href ? 'page' : undefined}>{c}</a></li>;
+              })}
+              <li><a href="/about/" aria-current={path === '/about/' ? 'page' : undefined}>About</a></li>
+            </ul>
+          </nav>
+          <a class="btn" href="#newsletter">Subscribe</a>
+        </div>
+      </div>
+    </header>
+    <main id="main">
+      <slot />
+    </main>
+    <Newsletter />
+    <footer class="site-footer">
+      <div class="wrap">
+        <div class="foot">
+          <div>
+            <a class="logo small" href="/" style="padding-top:0">{SITE.name}</a>
+            <p style="max-width:40ch">{SITE.description}</p>
+          </div>
+          <div>
+            <h2>Sections</h2>
+            <ul>
+              {CATEGORIES.map((c) => <li><a href={`/category/${c.toLowerCase()}/`}>{c}</a></li>)}
+            </ul>
+          </div>
+          <div>
+            <h2>Magazine</h2>
+            <ul>
+              <li><a href="/about/">About &amp; writers</a></li>
+              <li><a href={`mailto:${SITE.email}`}>Write to us</a></li>
+              <li><a href="/rss.xml">RSS feed</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="foot-base">
+          <span>© {new Date().getFullYear()} {SITE.name}, a fictional magazine. Articles are sample content; photos from Unsplash.</span>
+          <span>Template by <a href="https://ncatelier.com">NC Atelier</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

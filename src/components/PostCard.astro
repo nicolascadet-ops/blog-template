@@ -1,0 +1,26 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+import { AUTHORS } from '../data/authors';
+import { readingTime } from '../site';
+
+interface Props {
+  post: CollectionEntry<'posts'>;
+  headingLevel?: 'h2' | 'h3';
+}
+const { post, headingLevel = 'h3' } = Astro.props;
+const d = post.data;
+const H = headingLevel;
+---
+<article class="card">
+  <a class="img" href={`/posts/${post.id}/`} tabindex="-1" aria-hidden="true">
+    <Image src={d.cover} alt="" widths={[480, 720]} sizes="(min-width: 900px) 30vw, 100vw" loading="lazy" />
+  </a>
+  <H><a href={`/posts/${post.id}/`}>{d.title}</a></H>
+  <p class="dek">{d.dek}</p>
+  <p class="meta">
+    <a class="cat" href={`/category/${d.category.toLowerCase()}/`}>{d.category}</a>
+    <span>{AUTHORS[d.author].name}</span>
+    <span>{readingTime(post.body)} min read</span>
+  </p>
+</article>

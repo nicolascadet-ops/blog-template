@@ -1,0 +1,50 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import { AUTHORS } from '../data/authors';
+import { SITE } from '../site';
+---
+<Base title="About" description={SITE.description}>
+  <div class="wrap about">
+    <header>
+      <h1>A magazine for people who take the long way.</h1>
+      <div class="intro">
+        <p>Northbound publishes one story a week about travelling slowly to northern places: islands, mountains, small cities and the trains, buses and ferries between them.</p>
+        <p>We pay our own way, we don't accept free trips, and we only write about places we have actually been. If something in a guide is out of date, tell us and we will fix it.</p>
+        <p>Pitches, corrections and letters: <a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
+      </div>
+    </header>
+
+    <section aria-labelledby="writers-title">
+      <div class="shead"><h2 id="writers-title">Writers</h2></div>
+      <ul class="writers">
+        {Object.values(AUTHORS).map((a) => (
+          <li>
+            <Image src={a.photo} alt={`Portrait of ${a.name}`} width={160} height={160} class="avatar" />
+            <div>
+              <h3>{a.name}</h3>
+              <p class="meta"><span>{a.role}</span><span>{a.city}</span></p>
+              <p class="bio">{a.bio}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+      <p class="note">Northbound and its writers are fictional, created for this template. Portraits are sample photos from Unsplash.</p>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .about header { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; padding: 56px 0 96px; }
+  h1 { font-size: clamp(2.6rem, 6vw, 5rem); }
+  .intro { display: grid; gap: 1em; font-family: var(--serif); font-size: 20px; line-height: 1.6; color: var(--ink-2); }
+  .intro a { color: var(--cobalt); }
+  @media (max-width: 860px) { .about header { grid-template-columns: 1fr; } }
+  .writers { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; }
+  .writers li { display: grid; gap: 18px; align-content: start; }
+  .writers h3 { font-size: 1.9rem; }
+  .writers .meta { margin-top: 4px; }
+  .writers .bio { margin-top: 10px; font-family: var(--serif); color: var(--ink-2); }
+  .note { margin-top: 40px; font-size: 14px; color: var(--muted); }
+  @media (max-width: 860px) { .writers { grid-template-columns: 1fr; } }
+</style>

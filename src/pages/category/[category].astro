@@ -1,0 +1,43 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PostCard from '../../components/PostCard.astro';
+import { CATEGORIES } from '../../content.config';
+
+const BLURBS: Record<(typeof CATEGORIES)[number], string> = {
+  Destinations: 'Places worth the long way round: islands, small cities and the roads between them.',
+  Guides: 'Practical, tested advice for planning slower, better trips.',
+  Essays: 'Personal stories about travel, the people we meet and what we bring home.',
+};
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  return CATEGORIES.map((c) => ({
+    params: { category: c.toLowerCase() },
+    props: { name: c, posts: posts.filter((p) => p.data.category === c).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()) },
+  }));
+}
+const { name, posts } = Astro.props;
+---
+<Base title={name} description={BLURBS[name]}>
+  <div class="wrap">
+    <header class="chead">
+      <h1>{name}</h1>
+      <p>{BLURBS[name]} <span class="count">{posts.length} {posts.length === 1 ? 'story' : 'stories'}</span></p>
+    </header>
+    <div class="grid3">
+      {posts.map((p) => <PostCard post={p} headingLevel="h2" />)}
+    </div>
+  </div>
+</Base>
+
+<style>
+  .chead { padding: 56px 0 40px; margin-bottom: 40px; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: end; }
+  h1 { font-size: clamp(3rem, 9vw, 7rem); color: var(--cobalt); }
+  .chead p { font-family: var(--serif); font-size: 20px; color: var(--ink-2); max-width: 40ch; }
+  .count { display: block; margin-top: 8px; font: 600 14px var(--sans); color: var(--muted); }
+  @media (max-width: 760px) { .chead { grid-template-columns: 1fr; } }
+  .grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px clamp(20px, 3vw, 40px); }
+  @media (max-width: 900px) { .grid3 { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 600px) { .grid3 { grid-template-columns: 1fr; } }
+</style>

@@ -1,0 +1,102 @@
+---
+import { getCollection, render } from 'astro:content';
+import { Image, getImage } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import PostCard from '../../components/PostCard.astro';
+import { AUTHORS } from '../../data/authors';
+import { formatDate, readingTime } from '../../site';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post, all: posts } }));
+}
+
+const { post, all } = Astro.props;
+const { Content } = await render(post);
+const d = post.data;
+const author = AUTHORS[d.author];
+const og = await getImage({ src: d.cover, width: 1200, format: 'jpg' });
+// Two more stories: same section first, then the most recent
+const related = [...all]
+  .filter((p) => p.id !== post.id)
+  .sort((a, b) => Number(b.data.category === d.category) - Number(a.data.category === d.category) || b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+---
+<Base title={d.title} description={d.dek} image={og.src} type="article">
+  <article class="post">
+    <header class="head">
+      <h1>{d.title}</h1>
+      <p class="dek">{d.dek}</p>
+      <div class="byline">
+        <Image src={author.photo} alt="" width={48} height={48} class="avatar" />
+        <p>
+          <span class="who">By {author.name}</span>
+          <span class="meta">
+            <a class="cat" href={`/category/${d.category.toLowerCase()}/`}>{d.category}</a>
+            <time datetime={d.date.toISOString()}>{formatDate(d.date)}</time>
+            <span>{readingTime(post.body)} min read</span>
+          </span>
+        </p>
+      </div>
+    </header>
+
+    <figure class="cover">
+      <Image src={d.cover} alt={d.coverAlt} widths={[800, 1280, 1800]} sizes="100vw" loading="eager" fetchpriority="high" />
+      <figcaption class="head-cap">Photo: <a href={d.coverCredit.url}>{d.coverCredit.name}</a> / Unsplash</figcaption>
+    </figure>
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    <aside class="author-box" aria-label="About the author">
+      <Image src={author.photo} alt="" width={96} height={96} class="avatar" />
+      <div>
+        <p class="who">{author.name}</p>
+        <p class="meta"><span>{author.role}</span><span>{author.city}</span></p>
+        <p class="bio">{author.bio}</p>
+      </div>
+    </aside>
+  </article>
+
+  <section class="wrap more" aria-labelledby="more-title">
+    <div class="shead"><h2 id="more-title">Keep reading</h2></div>
+    <div class="grid3">
+      {related.map((p) => <PostCard post={p} />)}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .head { width: min(980px, 100% - 40px); margin-left: max(20px, calc((100% - 680px) / 2)); padding-top: 56px; }
+  h1 { font-size: clamp(2.8rem, 7vw, 5.6rem); line-height: .95; }
+  .dek { margin-top: 24px; font-family: var(--serif); font-size: clamp(1.2rem, 2vw, 1.55rem); line-height: 1.4; color: var(--ink-2); max-width: 46ch; }
+  .byline { display: flex; align-items: center; gap: 14px; margin-top: 32px; }
+  .byline p { display: grid; gap: 2px; }
+  .who { font-weight: 700; }
+  :global(.avatar) { object-fit: cover; flex: none; }
+  .cover { margin: 40px 0 0; }
+  .cover img { width: 100%; max-height: 78vh; object-fit: cover; }
+  .cover figcaption { margin: 10px 0 0 max(20px, calc((100% - 680px) / 2)); font-size: 13px; color: var(--muted); }
+
+  .prose { width: min(680px, 100% - 40px); margin: 56px auto 0; font-family: var(--serif); font-size: 20px; line-height: 1.7; color: var(--ink); }
+  .prose :global(p) { margin: 0 0 1.25em; }
+  .prose > :global(p:first-child::first-letter) { float: left; font: 800 4.6em/.8 var(--sans); font-stretch: 62%; margin: .06em .08em 0 0; color: var(--cobalt); }
+  .prose :global(h2) { font-size: clamp(1.7rem, 3vw, 2.2rem); margin: 2em 0 .6em; }
+  .prose :global(ul), .prose :global(ol) { margin: 0 0 1.4em; padding-left: 1.2em; }
+  .prose :global(li) { margin-bottom: .45em; }
+  .prose :global(li::marker) { color: var(--cobalt); }
+  .prose :global(strong) { font-weight: 650; }
+  .prose :global(a) { color: var(--cobalt); }
+  .prose :global(blockquote) { margin: 1.8em 0; padding: 0; font: 700 clamp(1.7rem, 3.2vw, 2.4rem)/1.12 var(--sans); font-stretch: 75%; letter-spacing: -0.01em; color: var(--cobalt-ink); }
+  .prose :global(blockquote p) { margin: 0; }
+  /* Inline photos break out of the text column; tall ones are capped to the viewport */
+  .prose :global(img) { width: auto; max-width: min(calc(100% + 120px), calc(100vw - 40px)); max-height: 80vh; margin: 2em 0; position: relative; left: 50%; transform: translateX(-50%); }
+
+  .author-box { width: min(680px, 100% - 40px); margin: 56px auto 0; padding-top: 28px; border-top: 1px solid var(--ink); display: flex; gap: 20px; align-items: flex-start; }
+  .author-box .bio { margin-top: 8px; font-family: var(--serif); color: var(--ink-2); }
+  .more { margin-top: 112px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px clamp(20px, 3vw, 40px); }
+  @media (max-width: 900px) { .grid3 { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 600px) { .grid3 { grid-template-columns: 1fr; } }
+</style>

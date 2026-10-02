@@ -1,0 +1,45 @@
+---
+// Newsletter sign-up. No backend: connect the form to your email provider
+// (Buttondown, Mailchimp, ConvertKit...) by setting `action` and removing the demo script.
+---
+<section class="newsletter" id="newsletter" aria-labelledby="nl-title">
+  <div class="wrap nl-in">
+    <div>
+      <h2 id="nl-title">One good journey, every Sunday.</h2>
+      <p>One story, three short tips and a photo worth printing. Free, and easy to leave.</p>
+    </div>
+    <form class="nl-form" novalidate>
+      <label class="sr-only" for="nl-email">Email address</label>
+      <input id="nl-email" type="email" name="email" autocomplete="email" placeholder="you@example.com" required aria-describedby="nl-note" />
+      <button class="btn" type="submit">Subscribe</button>
+      <p class="nl-note" id="nl-note" role="status">Free. We never share your address.</p>
+    </form>
+  </div>
+</section>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('.nl-form')!;
+  const input = form.querySelector('input')!;
+  const note = form.querySelector('.nl-note')!;
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!input.value.trim() || !input.checkValidity()) {
+      input.setAttribute('aria-invalid', 'true');
+      note.className = 'nl-note err';
+      note.textContent = 'Please enter a full email address, like name@example.com.';
+      input.focus();
+      return;
+    }
+    input.removeAttribute('aria-invalid');
+    const btn = form.querySelector('button')!;
+    btn.disabled = true;
+    btn.textContent = 'Subscribing…';
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.textContent = 'Subscribe';
+      note.className = 'nl-note ok';
+      note.textContent = 'Thanks! Check your inbox to confirm. (Demo: nothing was sent.)';
+      form.reset();
+    }, 700);
+  });
+</script>
