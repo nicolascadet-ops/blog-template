@@ -79,4 +79,4 @@ and ![alt text](../../assets/posts/another-photo.jpg) for inline photos.
 
 NC Atelier designs and builds fast, accessible websites for businesses in the UK, US and Canada.
 
-**Contact:** _add your email / LinkedIn here_
+**Get in touch:** [ncatelier.com](https://ncatelier.com) · [LinkedIn](https://www.linkedin.com/in/cadetnicolas)
