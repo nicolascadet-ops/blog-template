@@ -1,0 +1,15 @@
+---
+// Writer avatar: initials on cobalt. To use a photo instead, add `photo` to the author in
+// src/data/authors.ts and render <Image src={photo} ... /> here.
+interface Props {
+  name: string;
+  size: number;
+}
+const { name, size } = Astro.props;
+const initials = name.split(' ').map((w) => w[0]).join('').slice(0, 2);
+---
+<span class="avatar" style={`width:${size}px;height:${size}px;font-size:${Math.round(size * 0.38)}px`} aria-hidden="true">{initials}</span>
+
+<style>
+  .avatar { display: inline-grid; place-items: center; flex: none; background: var(--cobalt); color: #fff; font-family: var(--sans); font-stretch: 75%; font-weight: 700; letter-spacing: 0.02em; }
+</style>

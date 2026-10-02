@@ -203,7 +203,7 @@ A 4px ink bar with 14px of space above an Archivo section title; 32px to the con
 Full-width sky band, 72px padding, two columns (headline + serif pitch left, form right, aligned to the bottom), stacking at 760px. Headline in Deep Cobalt at clamp 2.2-3.8rem. The footer drops its top rule when it follows the band.
 
 ### Article Furniture
-Byline with a 48px square portrait, bold name and meta; an author box closing the article under a 1px ink rule with a 96px portrait and serif bio; photo credits as 13px captions aligned to the text measure.
+Byline with a 48px square cobalt initials avatar, bold name and meta; an author box closing the article under a 1px ink rule with a 96px avatar and serif bio; photo credits as 13px captions aligned to the text measure.
 
 ## Do's and Don'ts
 

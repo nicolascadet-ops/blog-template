@@ -53,7 +53,7 @@ and ![alt text](../../assets/posts/another-photo.jpg) for inline photos.
 | What | Where |
 |---|---|
 | Magazine name, tagline, email | `src/site.ts` |
-| Writers | `src/data/authors.ts` and `src/assets/authors/` |
+| Writers | `src/data/authors.ts` (avatars show initials, see `src/components/Avatar.astro`) |
 | Sections | `CATEGORIES` in `src/content.config.ts` and the blurbs in `src/pages/category/[category].astro` |
 | Colours and fonts | CSS variables at the top of `src/styles/global.css` |
 | Domain (for RSS/sitemap) | `site` in `astro.config.mjs` |
@@ -70,7 +70,7 @@ and ![alt text](../../assets/posts/another-photo.jpg) for inline photos.
 ## Credits
 
 - Typefaces: [Archivo](https://fonts.google.com/specimen/Archivo) and [Source Serif 4](https://fonts.google.com/specimen/Source+Serif+4), SIL Open Font License.
-- Photos: [Unsplash](https://unsplash.com) contributors under the [Unsplash License](https://unsplash.com/license). Cover credits are in each article's `coverCredit`; inline photos: Tim Rüßmann (Skye), Petr Slováček (Lofoten), Diane Picchiottino (Montréal), lastmayday (Hokkaido), Annie Spratt (Faroe Islands), Agent J (Bergen). Writer portraits: Ali HSFT, Asad Kareem musa, Larm Rmah.
+- Photos: [Unsplash](https://unsplash.com) contributors under the [Unsplash License](https://unsplash.com/license). Cover credits are in each article's `coverCredit`; inline photos: Tim Rüßmann (Skye), Petr Slováček (Lofoten), Diane Picchiottino (Montréal), lastmayday (Hokkaido), Annie Spratt (Faroe Islands), Agent J (Bergen).
 - Built by **NC Atelier**.
 
 ---

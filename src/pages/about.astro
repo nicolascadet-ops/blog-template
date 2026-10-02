@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import Avatar from '../components/Avatar.astro';
 import Base from '../layouts/Base.astro';
 import { AUTHORS } from '../data/authors';
 import { SITE } from '../site';
@@ -20,7 +20,7 @@ import { SITE } from '../site';
       <ul class="writers">
         {Object.values(AUTHORS).map((a) => (
           <li>
-            <Image src={a.photo} alt={`Portrait of ${a.name}`} width={160} height={160} class="avatar" />
+            <Avatar name={a.name} size={120} />
             <div>
               <h3>{a.name}</h3>
               <p class="meta"><span>{a.role}</span><span>{a.city}</span></p>
@@ -29,7 +29,7 @@ import { SITE } from '../site';
           </li>
         ))}
       </ul>
-      <p class="note">Northbound and its writers are fictional, created for this template. Portraits are sample photos from Unsplash.</p>
+      <p class="note">Northbound and its writers are fictional, created for this template. Writers are shown with initials; add real photos in <code>src/components/Avatar.astro</code>.</p>
     </section>
   </div>
 </Base>

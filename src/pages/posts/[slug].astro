@@ -3,6 +3,7 @@ import { getCollection, render } from 'astro:content';
 import { Image, getImage } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import PostCard from '../../components/PostCard.astro';
+import Avatar from '../../components/Avatar.astro';
 import { AUTHORS } from '../../data/authors';
 import { formatDate, readingTime } from '../../site';
 
@@ -28,7 +29,7 @@ const related = [...all]
       <h1>{d.title}</h1>
       <p class="dek">{d.dek}</p>
       <div class="byline">
-        <Image src={author.photo} alt="" width={48} height={48} class="avatar" />
+        <Avatar name={author.name} size={48} />
         <p>
           <span class="who">By {author.name}</span>
           <span class="meta">
@@ -50,7 +51,7 @@ const related = [...all]
     </div>
 
     <aside class="author-box" aria-label="About the author">
-      <Image src={author.photo} alt="" width={96} height={96} class="avatar" />
+      <Avatar name={author.name} size={96} />
       <div>
         <p class="who">{author.name}</p>
         <p class="meta"><span>{author.role}</span><span>{author.city}</span></p>
@@ -74,7 +75,6 @@ const related = [...all]
   .byline { display: flex; align-items: center; gap: 14px; margin-top: 32px; }
   .byline p { display: grid; gap: 2px; }
   .who { font-weight: 700; }
-  :global(.avatar) { object-fit: cover; flex: none; }
   .cover { margin: 40px 0 0; }
   .cover img { width: 100%; max-height: 78vh; object-fit: cover; }
   .cover figcaption { margin: 10px 0 0 max(20px, calc((100% - 680px) / 2)); font-size: 13px; color: var(--muted); }
